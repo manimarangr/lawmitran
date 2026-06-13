@@ -1,0 +1,31 @@
+import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'signup',
+    loadComponent: () => import('./features/auth/signup.component').then((m) => m.SignupComponent),
+  },
+  {
+    path: 'lawyers',
+    loadComponent: () => import('./features/lawyers/lawyer-list.component').then((m) => m.LawyerListComponent),
+  },
+  {
+    path: 'lawyers/:id',
+    loadComponent: () => import('./features/lawyers/lawyer-profile.component').then((m) => m.LawyerProfileComponent),
+  },
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+  },
+  { path: '**', redirectTo: '' },
+];

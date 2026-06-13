@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  LAWYER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ConsultationStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  phone         String?
+  password      String
+  role          UserRole       @default(CUSTOMER)
+  status        UserStatus     @default(ACTIVE)
+  profilePhoto  String?
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  lawyer        Lawyer?
+  consultations Consultation[] @relation("CustomerConsultations")
+  reviews       Review[]       @relation("CustomerReviews")
+  documents     Document[]
+
+  @@map("users")
+}
+
+model Lawyer {
+  id                 String             @id @default(uuid())
+  userId             String             @unique @map("user_id")
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  barCouncilNumber   String             @unique @map("bar_council_number")
+  experience         Int
+  consultationFee    Decimal            @map("consultation_fee") @db.Decimal(10, 2)
+  bio                String
+  city               String
+  languages          String[]
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  practiceAreas      PracticeArea[]     @relation("LawyerPracticeAreas")
+  educations         Education[]
+  experiences        Experience[]
+  availability       Availability[]
+  consultations      Consultation[]
+  reviews            Review[]
+  certificates       Document[]         @relation("LawyerCertificates")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  @@map("lawyers")
+}
+
+model PracticeArea {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String
+  lawyers     Lawyer[] @relation("LawyerPracticeAreas")
+
+  @@map("practice_areas")
+}
+
+model Education {
+  id        String @id @default(uuid())
+  lawyerId String @map("lawyer_id")
+  lawyer   Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  degree    String
+  institute String
+  year      Int
+
+  @@map("educations")
+}
+
+model Experience {
+  id          String @id @default(uuid())
+  lawyerId    String @map("lawyer_id")
+  lawyer      Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  title       String
+  institution String
+  years       Int
+
+  @@map("experiences")
+}
+
+model Availability {
+  id        String @id @default(uuid())
+  lawyerId String @map("lawyer_id")
+  lawyer   Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  dayOfWeek Int    @map("day_of_week")
+  startTime String @map("start_time")
+  endTime   String @map("end_time")
+
+  @@map("availability")
+}
+
+model Consultation {
+  id               String             @id @default(uuid())
+  customerId       String             @map("customer_id")
+  customer         User               @relation("CustomerConsultations", fields: [customerId], references: [id], onDelete: Cascade)
+  lawyerId         String             @map("lawyer_id")
+  lawyer           Lawyer             @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  consultationDate DateTime           @map("consultation_date")
+  status           ConsultationStatus @default(REQUESTED)
+  notes            String?
+  paymentStatus    PaymentStatus      @default(PENDING) @map("payment_status")
+  documentUrls     String[]           @map("document_urls")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+
+  @@map("consultations")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  customerId String   @map("customer_id")
+  customer   User     @relation("CustomerReviews", fields: [customerId], references: [id], onDelete: Cascade)
+  lawyerId   String   @map("lawyer_id")
+  lawyer     Lawyer   @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  rating     Int
+  comment    String
+  approved   Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([customerId, lawyerId])
+  @@map("reviews")
+}
+
+model Document {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lawyerId     String?  @map("lawyer_id")
+  lawyer       Lawyer?  @relation("LawyerCertificates", fields: [lawyerId], references: [id], onDelete: SetNull)
+  documentName String   @map("document_name")
+  documentUrl  String   @map("document_url")
+  mimeType     String?  @map("mime_type")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("documents")
+}

@@ -1,0 +1,24 @@
+{
+  "name": "lawmitran",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lawmitran - Legal Help, Simplified.",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "api:dev": "npm run start:dev -w @lawmitran/api",
+    "api:build": "npm run build -w @lawmitran/api",
+    "api:test": "npm run test -w @lawmitran/api",
+    "web:dev": "npm run start -w @lawmitran/web",
+    "web:build": "npm run build -w @lawmitran/web",
+    "db:generate": "npm run prisma:generate -w @lawmitran/api",
+    "db:migrate": "npm run prisma:migrate -w @lawmitran/api",
+    "db:seed": "npm run prisma:seed -w @lawmitran/api"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}

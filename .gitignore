@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+.angular/
+.npm-cache/
+.env
+.env.local
+*.log
+
+apps/**/dist/
+apps/**/.angular/
+apps/**/node_modules/
+node_modules
