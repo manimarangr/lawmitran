@@ -1,13 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsArray, IsDate, IsOptional, IsString } from "class-validator";
 
 export class CreateConsultationDto {
   @ApiProperty()
   @IsString()
   lawyerId: string;
 
-  @ApiProperty({ example: '2026-07-01T10:30:00.000Z' })
+  @ApiProperty({ example: "2026-07-01T10:30:00.000Z" })
   @Type(() => Date)
   @IsDate()
   consultationDate: Date;

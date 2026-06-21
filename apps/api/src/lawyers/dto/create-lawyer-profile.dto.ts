@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   ArrayNotEmpty,
   IsArray,
@@ -8,10 +8,10 @@ import {
   IsString,
   Max,
   Min,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateLawyerProfileDto {
-  @ApiProperty({ example: 'DL/1234/2012' })
+  @ApiProperty({ example: "DL/1234/2012" })
   @IsString()
   barCouncilNumber: string;
 
@@ -26,20 +26,20 @@ export class CreateLawyerProfileDto {
   @Min(0)
   consultationFee: number;
 
-  @ApiProperty({ example: 'Delhi' })
+  @ApiProperty({ example: "Delhi" })
   @IsString()
   city: string;
 
-  @ApiProperty({ example: 'Civil litigation and family dispute specialist.' })
+  @ApiProperty({ example: "Civil litigation and family dispute specialist." })
   @IsString()
   bio: string;
 
-  @ApiProperty({ example: ['Hindi', 'English'] })
+  @ApiProperty({ example: ["Hindi", "English"] })
   @IsArray()
   @ArrayNotEmpty()
   languages: string[];
 
-  @ApiProperty({ example: ['Family Law', 'Property Law'] })
+  @ApiProperty({ example: ["Family Law", "Property Law"] })
   @IsArray()
   @ArrayNotEmpty()
   practiceAreas: string[];

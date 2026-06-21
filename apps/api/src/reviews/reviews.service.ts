@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateReviewDto } from './dto/create-review.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { CreateReviewDto } from "./dto/create-review.dto";
 
 @Injectable()
 export class ReviewsService {
@@ -10,7 +10,7 @@ export class ReviewsService {
     return this.prisma.review.findMany({
       where: { lawyerId, approved: true },
       include: { customer: { select: { name: true, profilePhoto: true } } },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -18,7 +18,12 @@ export class ReviewsService {
     return this.prisma.review.upsert({
       where: { customerId_lawyerId: { customerId, lawyerId: dto.lawyerId } },
       update: { rating: dto.rating, comment: dto.comment, approved: true },
-      create: { customerId, lawyerId: dto.lawyerId, rating: dto.rating, comment: dto.comment },
+      create: {
+        customerId,
+        lawyerId: dto.lawyerId,
+        rating: dto.rating,
+        comment: dto.comment,
+      },
     });
   }
 

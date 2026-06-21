@@ -1,5 +1,5 @@
-import { Transform, Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { Transform, Type } from "class-transformer";
+import { IsInt, IsOptional, IsString, Max, Min } from "class-validator";
 
 export class LawyerSearchDto {
   @IsOptional()

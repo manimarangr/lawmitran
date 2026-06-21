@@ -1,10 +1,14 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UserRole } from "@prisma/client";
+import * as bcrypt from "bcrypt";
+import { PrismaService } from "../prisma/prisma.service";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 
 @Injectable()
 export class AuthService {
@@ -14,9 +18,11 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const exists = await this.prisma.user.findUnique({ where: { email: dto.email.toLowerCase() } });
+    const exists = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+    });
     if (exists) {
-      throw new ConflictException('Email is already registered');
+      throw new ConflictException("Email is already registered");
     }
 
     const user = await this.prisma.user.create({
@@ -34,9 +40,11 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email.toLowerCase() } });
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+    });
     if (!user || !(await bcrypt.compare(dto.password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     const safeUser = await this.me(user.id);
@@ -60,7 +68,12 @@ export class AuthService {
     });
   }
 
-  private async sign(user: { id: string; email: string; role: UserRole; status: string }) {
+  private async sign(user: {
+    id: string;
+    email: string;
+    role: UserRole;
+    status: string;
+  }) {
     return this.jwtService.signAsync({
       id: user.id,
       email: user.email,
